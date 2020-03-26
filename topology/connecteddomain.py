@@ -2,7 +2,7 @@
 """
 Created on Sat Mar 21 21:41:13 2020
 
-Longest Common Substring Algorithm
+The longest common string algorithm is used to identify the connected domain.
 
 This module should be fully compatible with:
     * Python >=v3.7
