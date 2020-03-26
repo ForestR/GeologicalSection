@@ -366,51 +366,17 @@ import numpy as np
 #     nd: node_depth
 #     cd: connected_domain
 # =============================================================================
-def new_node_hole1(hi1, s1, nl1, nd1, cd1, i, n1, hi2,
-                   num_node, new_node_list, num_curve, curve_list):
-    ''' 生成钻孔1的控制点及拓扑图 '''
-    num_node += 1
-    depth = nd1[i]
-    for x in range(1,n1): depth += nd1[i+x]
-    depth /= n1;
-    new_node = [num_node,hi1,hi2,depth] 
-    new_node_list.append(new_node) 
-    
-    for x in range(0,n1):
-        curve_list.append([num_curve, nl1[i+x], num_node,
-                      s1[cd1[i]+x],s1[cd1[i]+x+1]])
-        num_curve += 1
-        
-    return (num_node, new_node_list, num_curve, curve_list)
 
-
-def new_node_hole2(hi2, s2, nl2, nd2, cd2, i, n2, hi1,
-                   num_node, new_node_list, num_curve, curve_list):
-    ''' 生成钻孔2的控制点及拓扑图 '''
-    num_node += 1
-    depth = nd2[i]
-    for x in range(1,n2): depth += nd2[i+x]
-    depth /= n2;
-    new_node = [num_node,hi2,hi1,depth] 
-    new_node_list.append(new_node) 
-    
-    for x in range(0,n2):
-        curve_list.append([num_curve, num_node, nl2[i+x], 
-                      s2[cd2[i]+x],s2[cd2[i]+x+1]])
-        num_curve += 1
-        
-    return (num_node, new_node_list, num_curve, curve_list)
-
-
-def gen_topology(hi1, s1, ds1, nl1, nd1, hi2, s2, ds2, nl2, nd2):
+# =============================================================================
+# 按照[弧段号，起点，终点，左域，右域]的数据结构存储二维拓扑图
+# =============================================================================
+def gen_topology(hi1, s1, ds1, nl1, nd1, hi2, s2, ds2, nl2, nd2, 
+                 interfaceID, num_curve, new_node_list, curve_list):
     cd1 = [i for i,x in enumerate(ds1) if x == 1]
     cd2 = [i for i,x in enumerate(ds2) if x == 1]
-    
-    interfaceID = pd.Series([nl1,nl2])
-    curve_list = []; num_curve = 0;
+        
     # 新节点编号紧接原节点编号
     num_node = max(interfaceID.max())
-    new_node_list = []
     for i in range(len(cd1)-1):
         
         n1 = cd1[i+1]-cd1[i]
@@ -452,12 +418,52 @@ def gen_topology(hi1, s1, ds1, nl1, nd1, hi2, s2, ds2, nl2, nd2):
                 hi2, s2, nl2, nd2, cd2, i, n2, hi1,
                 num_node, new_node_list, num_curve, curve_list)  
         
-    return (new_node_list, curve_list)
+    return (num_curve, new_node_list, curve_list)
+
+
+# =============================================================================
+# 对于非连通域生成相应的拓扑控制点，自动生成相应的钻孔地质剖面拓扑
+# =============================================================================
+def new_node_hole1(hi1, s1, nl1, nd1, cd1, i, n1, hi2,
+                   num_node, new_node_list, num_curve, curve_list):
+    ''' 生成钻孔1的控制点及拓扑图 '''
+    num_node += 1
+    depth = nd1[i]
+    for x in range(1,n1): depth += nd1[i+x]
+    depth /= n1;
+    new_node = [num_node,hi1,hi2,depth] 
+    new_node_list.append(new_node) 
+    
+    for x in range(0,n1):
+        curve_list.append([num_curve, nl1[i+x], num_node,
+                      s1[cd1[i]+x],s1[cd1[i]+x+1]])
+        num_curve += 1
+        
+    return (num_node, new_node_list, num_curve, curve_list)
+
+
+def new_node_hole2(hi2, s2, nl2, nd2, cd2, i, n2, hi1,
+                   num_node, new_node_list, num_curve, curve_list):
+    ''' 生成钻孔2的控制点及拓扑图 '''
+    num_node += 1
+    depth = nd2[i]
+    for x in range(1,n2): depth += nd2[i+x]
+    depth /= n2;
+    new_node = [num_node,hi2,hi1,depth] 
+    new_node_list.append(new_node) 
+    
+    for x in range(0,n2):
+        curve_list.append([num_curve, num_node, nl2[i+x], 
+                      s2[cd2[i]+x],s2[cd2[i]+x+1]])
+        num_curve += 1
+        
+    return (num_node, new_node_list, num_curve, curve_list)
+
     
 
 if __name__ == "__main__":
     
-    from ConnectedDomain import LCS   
+    from connecteddomain import LCS   
     
     # Enter an arbitrary string representing the 
     # geological stratification of the borehole.
@@ -476,14 +482,15 @@ if __name__ == "__main__":
     for x in range(len(s2)-1): nd2.append(0.0+1.6*x)
     
     (lcs,ds1,ds2)=LCS(s1, s2)
+    interfaceID = pd.Series([nl1,nl2])
     
-    (new_node_list, curve_list) = gen_topology(
-        hi1, s1, ds1, nl1, nd1, hi2, s2, ds2, nl2, nd2)         
+    num_curve = 0; new_node_list = []; curve_list = [];   
+    
+    (num_curve, new_node_list, curve_list) = gen_topology(
+        hi1, s1, ds1, nl1, nd1, hi2, s2, ds2, nl2, nd2, 
+        interfaceID, num_curve, new_node_list, curve_list)         
            
     print(new_node_list)
     print(curve_list)    
-
-
-
 
 
