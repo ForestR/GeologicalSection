@@ -6,6 +6,7 @@ and the geological section topology is formed.
 基于钻孔原始地质数据，自动判断钻孔的相邻关系，并形成地质剖面拓扑。
 
  ###################################################################################
+ 
 The main differences from the traditional drill section method are as follows:
 
 1. The adjacent borehole used to generate the borehole profile supports customization (by default, the adjacent 
