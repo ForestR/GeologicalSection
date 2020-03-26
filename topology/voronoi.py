@@ -135,7 +135,7 @@ def drilling_floor_plan(points=None):
     for (p1, p2), (v1, v2) in zip(vor.ridge_points, vor.ridge_vertices):
         all_ridges.setdefault(p1, []).append((p2, v1, v2))
         all_ridges.setdefault(p2, []).append((p1, v1, v2))
-    i=7; print("编号为%s的钻孔点的邻域集为\n"%i,all_ridges[i])
+    # i=7; print("编号为%s的钻孔点的邻域集为\n"%i,all_ridges[i])
 
     return all_ridges
 
@@ -146,14 +146,14 @@ def drilling_floor_plan(points=None):
 # =============================================================================
 if __name__ == "__main__":  
     import pandas as pd
-    from ReadData import HID
+    from readdata import HID
     
-#     df1 = pd.read_excel("GeologiclaData.xlsx", "Location")
-# #    df2 = pd.read_excel("GeologiclaData.xlsx", "Data")
-#     holeID = HID(df1)
+    df1 = pd.read_excel("GeologiclaData.xlsx", "Location")
+#    df2 = pd.read_excel("GeologiclaData.xlsx", "Data")
+    holeID = HID(df1)
     
-#     points = holeID.values[:,1:3]
-    nbh = drilling_floor_plan()
+    points = holeID.values[:,1:3]
+    nbh = drilling_floor_plan(points)
     
     
     
