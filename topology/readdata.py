@@ -66,6 +66,17 @@ def SID(df):
     
     return df
 
+"""    
+后续该处可以更新为映射，精简代码并节省内存、提升计算效率
+lsit = [str1,str2,...]
+tmp = pd.Series(list)
+mapper = {v:k for k,v in enumerate(tmp.unique())}
+as_int = tmp.map(mapper) # dtype:int64
+
+ctmp = tmp.cat.categories
+ctmp.cat.reorder_categories(mapper).cat.codes # dtype:int8
+"""
+
 
 # =============================================================================
 # 按钻孔代号存储钻孔所涉及地质界面点的索引及标高
