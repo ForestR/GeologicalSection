@@ -15,8 +15,6 @@ e-mail: forestrock@163.com
 
 import pandas as pd
 from connecteddomain import LCS
-from voronoi import drilling_floor_plan
-import readdata as rd
 import gentopology_instance as gi
 
 
@@ -24,6 +22,7 @@ import gentopology_instance as gi
 # 依次两两比较相邻钻孔，由LCS判别土层代号字符串的公共子序列（即连通域）
 # =============================================================================
 def neighbourhood(nbh, domainID, interfaceID, depthID):
+    num_node = max(interfaceID.max());
     num_curve = 0; new_node_list = []; curve_list = [];
     for i in range(len(nbh)):
         tmp = [str(x) for x in domainID.iloc[i]]
@@ -43,8 +42,8 @@ def neighbourhood(nbh, domainID, interfaceID, depthID):
                 
                 (lcs,ds1,ds2)=LCS(s1, s2)
                               
-                (num_curve, new_node_list, curve_list) = gi.gen_topology(
-                    i, s1, ds1, nl1, nd1, n, s2, ds2, nl2, nd2, 
+                (num_node, num_curve, new_node_list, curve_list) = gi.gen_topology(
+                    i, s1, ds1, nl1, nd1, n, s2, ds2, nl2, nd2, num_node,
                     interfaceID, num_curve, new_node_list, curve_list)     
    
     return (new_node_list, curve_list)
@@ -52,6 +51,10 @@ def neighbourhood(nbh, domainID, interfaceID, depthID):
 
 
 if __name__ == "__main__":
+    
+    import readdata as rd
+    from voronoi import drilling_floor_plan
+    
     df1 = pd.read_excel("GeologiclaData.xlsx", "Location")
     df2 = pd.read_excel("GeologiclaData.xlsx", "Data")     
     
@@ -65,9 +68,4 @@ if __name__ == "__main__":
        
     (new_node_list, curve_list) = neighbourhood(
         nbh, domainID, interfaceID, depthID)
-    
-    # print(new_node_list)
-    # print(curve_list)   
-
-
     
