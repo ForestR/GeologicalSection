@@ -47,15 +47,17 @@ def HID(df):
 # 自动为土层命名创建对应的代号映射表（也可以考虑将常见土层的代号固定下来）
 # =============================================================================
 def SID(df):
-    soil = []
+    soil = []; tmp = "";
     for i in range(df.shape[0]):
-        if not(df[df.columns[4]][i] in soil):
-            soil.append(df[df.columns[4]][i])
+        # 图集编号+土层命名
+        tmp = df[df.columns[3]][i]+df[df.columns[4]][i]
+        if not(tmp in soil):
+            soil.append(tmp)
     soilID = pd.DataFrame({"soilname":soil})
     
     ID = []; tmp = ""; j = 0;
     for i in range(df.shape[0]):
-        tmp = df[df.columns[4]][i]
+        tmp = df[df.columns[3]][i]+df[df.columns[4]][i]
         j = soilID.soilname[soilID.soilname.values == tmp].index.tolist()[0]
         # 将数字代号转换为字符代号"A~Z"和"a~z"
         if j < 26 :
@@ -102,7 +104,10 @@ def TopologicalNode(df,holeID):
                 ID.append(j);j+=1;
                 dd.append(df[df.columns[1]][i])
                 
-    if (ID != []):interface.append(ID); depth.append(dd);
+    if (ID != []):
+        ID.append(j);j+=1;
+        dd.append(df[df.columns[2]][i])
+        interface.append(ID); depth.append(dd);
     interfaceID = pd.Series(interface,index=hole)
     depthID = pd.Series(depth,index=hole)
     
