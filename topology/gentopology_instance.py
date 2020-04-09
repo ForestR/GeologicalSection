@@ -349,7 +349,18 @@ import numpy as np
 
 
 
-
+# =============================================================================
+# Case_7
+# 
+# 当连通域存在洞时，例如钻孔1表达为[AC]，钻孔2为[ABAC]时，
+# 钻孔1的A层，应与钻孔2的两个A层都连通
+# 
+#     hi: hole_id
+#     ds: domain_status
+#     nl: node_list
+#     nd: node_depth
+#     cd: connected_domain
+# =============================================================================
 
 
 
@@ -545,7 +556,7 @@ if __name__ == "__main__":
     for i in range(len(int_list)):
         n_id = int_list[i]
         dist = np.sqrt(np.power(h1_loc[0]-nodes[n_id][1],2)
-                   + np.power(h1_loc[1]-nodes[n_id][2],2))
+                    + np.power(h1_loc[1]-nodes[n_id][2],2))
         elev = nodes[n_id][3]
         vertices[n_id] = [dist,elev]
         
