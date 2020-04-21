@@ -176,7 +176,8 @@ if __name__ == "__main__":
     
     
     # 指定用于生成剖面的邻接钻孔
-    h1_id = 13; h2_id = 14;    
+    h1_id = 23; h2_id = 24; 
+   
     
     nodes = update_nodes(holeID, interfaceID, depthID, new_node_list)
     
