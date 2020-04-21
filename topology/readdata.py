@@ -64,6 +64,7 @@ def SID(df):
             ID.append(chr(65+j))
         else:
             ID.append(chr(97+j))
+
     df["soilID"] = ID
     
     return df
@@ -84,15 +85,15 @@ ctmp.cat.reorder_categories(mapper).cat.codes # dtype:int8
 # 按钻孔代号存储钻孔所涉及地质界面点的索引及标高
 # =============================================================================
 def TopologicalNode(df,holeID):
-    tmp = ""; hole = []; interface = []; ID = []; j = 0; depth = []; dd = [];
+    tmp = ""; hole = []; interface = []; ID = []; 
+    j = 0; k = 0; depth = []; dd = [];
     for i in range(df.shape[0]):
-        if (df[df.columns[0]][i] in list(holeID.ID)):
-            
+        if (df[df.columns[0]][i] in list(holeID.ID)):           
             if (df[df.columns[0]][i] != tmp):
                 if (ID != []):
                     ID.append(j);j+=1;
                     interface.append(ID)
-                    dd.append(df[df.columns[2]][i-1])
+                    dd.append(df[df.columns[2]][k])
                     depth.append(dd)
                     
                 tmp = df[df.columns[0]][i]
@@ -102,12 +103,14 @@ def TopologicalNode(df,holeID):
                 
             else:
                 ID.append(j);j+=1;
-                dd.append(df[df.columns[1]][i])
+                dd.append(df[df.columns[1]][i])                
+                k = i
                 
     if (ID != []):
         ID.append(j);j+=1;
-        dd.append(df[df.columns[2]][i])
+        dd.append(df[df.columns[2]][k])
         interface.append(ID); depth.append(dd);
+
     interfaceID = pd.Series(interface,index=hole)
     depthID = pd.Series(depth,index=hole)
     
